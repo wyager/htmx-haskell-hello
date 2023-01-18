@@ -1,13 +1,12 @@
 module Main (main) where
 
 import Control.Applicative ((<|>))
-import Control.Concurrent.Async (async,  waitAny)
+import Control.Concurrent.Async (async, waitAny)
 import qualified Network.Wai.Handler.Warp as Warp
 import qualified Network.Wai.Handler.WarpTLS as TLS
 import qualified Options.Applicative as OA
 import Servant
-  ( 
-    Get,
+  ( Get,
     Proxy (Proxy),
     Raw,
     Server,
@@ -23,16 +22,16 @@ import System.IO
     hPrint,
     openFile,
   )
-import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze as B
+import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
 -- import qualified URI.ByteString as URIB
 import WaiAppStatic.Storage.Filesystem (defaultWebAppSettings)
 
 type Site =
-    "a" :>  Get '[HTML] H.Html
-    :<|> "b" :>  Get '[HTML] H.Html
+  "a" :> Get '[HTML] H.Html
+    :<|> "b" :> Get '[HTML] H.Html
     :<|> Get '[HTML] H.Html
     :<|> Raw
 
@@ -44,18 +43,17 @@ serveDirectory = serveDirectoryWith . defaultWebAppSettings . addTrailingPathSep
 
 style :: H.Html
 style = H.style $ do
-    "body {background-color: linen;}"
-    "p {color: maroon;}"
-    ".buttonDiv {color: blue;}"
-    "@font-face {font-family: 'Berkeley Mono'; src: url('/BerkeleyMono-Regular.woff2') format('woff2');}"
-    "span.mono {font-family: 'Berkeley Mono';}"
+  "body {background-color: linen;}"
+  "p {color: maroon;}"
+  ".buttonDiv {color: blue;}"
+  "@font-face {font-family: 'Berkeley Mono'; src: url('/BerkeleyMono-Regular.woff2') format('woff2');}"
+  "span.mono {font-family: 'Berkeley Mono';}"
 
-a :: H.Html 
+a :: H.Html
 a = H.div ! hxGet "/b" ! outer ! A.class_ "buttonDiv" $ "Click me :)"
 
 b :: H.Html
 b = H.div ! hxGet "/a" ! outer ! A.class_ "buttonDiv" $ "Click me :o"
-
 
 hxGet :: B.AttributeValue -> B.Attribute
 hxGet = B.customAttribute "hx-get"
@@ -68,21 +66,20 @@ outer = hxSwap "outerHTML"
 
 index :: H.Html
 index = H.body $ do
-    H.head $ do
-        style
-        H.script ! A.src "/htmx.min.js" $ ""
-    H.body $ do
-        H.p $  do
-            "Welcome to "
-            H.span ! A.class_ "mono" $ "<The Index>"
-        a
-    
+  H.head $ do
+    style
+    H.script ! A.src "/htmx.min.js" $ ""
+  H.body $ do
+    H.p $ do
+      "Welcome to "
+      H.span ! A.class_ "mono" $ "<The Index>"
+    a
 
 makeServer :: FilePath -> IO (Server Site)
 makeServer contentPath = do
   let files = serveDirectory contentPath
       server =
-           return a :<|> return b :<|> return index :<|> files
+        return a :<|> return b :<|> return index :<|> files
   return server
 
 data TLSMode = NoTLS | TLS {tlsCertPath :: FilePath, tlsKeyPath :: FilePath, tlsPort :: Warp.Port}
@@ -125,4 +122,3 @@ main = do
           https' <- async (https tlsSettings tlsPort)
           (_, ()) <- waitAny [http', https']
           return ()
-
