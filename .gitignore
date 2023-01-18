@@ -5,3 +5,4 @@ server
 *.swp
 .stack-work
 *.lock
+dist-newstyle
