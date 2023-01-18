@@ -7,18 +7,10 @@ import qualified Network.Wai.Handler.WarpTLS as TLS
 import qualified Options.Applicative as OA
 import Servant
   ( 
-   --  Accept,
     Get,
-   --  MimeRender,
-  --  OctetStream,
     Proxy (Proxy),
-  --  QueryParam,
-   -- QueryParams,
     Raw,
-  --  RemoteHost,
     Server,
-  --  contentType,
-  --  mimeRender,
     serve,
     serveDirectoryWith,
     (:<|>) ((:<|>)),
@@ -82,7 +74,7 @@ index = H.body $ do
     H.body $ do
         H.p $  do
             "Welcome to "
-            H.span ! A.class_ "mono" $ "<The index>"
+            H.span ! A.class_ "mono" $ "<The Index>"
         a
     
 
