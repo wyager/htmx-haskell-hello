@@ -29,9 +29,8 @@ import qualified Text.Blaze.Html5.Attributes as A
 -- import qualified URI.ByteString as URIB
 import WaiAppStatic.Storage.Filesystem (defaultWebAppSettings)
 
-type Site =
-  "a" :> Get '[HTML] H.Html
-    :<|> "b" :> Get '[HTML] H.Html
+type Site = "smile" :> Get '[HTML] H.Html
+    :<|> "wow" :> Get '[HTML] H.Html
     :<|> Get '[HTML] H.Html
     :<|> Raw
 
@@ -49,11 +48,11 @@ style = H.style $ do
   "@font-face {font-family: 'Berkeley Mono'; src: url('/BerkeleyMono-Regular.woff2') format('woff2');}"
   "span.mono {font-family: 'Berkeley Mono';}"
 
-a :: H.Html
-a = H.div ! hxGet "/b" ! outer ! A.class_ "buttonDiv" $ "Click me :)"
+smile :: H.Html
+smile = H.div ! hxGet "/wow" ! outer ! A.class_ "buttonDiv" $ "Click me :)"
 
-b :: H.Html
-b = H.div ! hxGet "/a" ! outer ! A.class_ "buttonDiv" $ "Click me :o"
+wow :: H.Html
+wow = H.div ! hxGet "/smile" ! outer ! A.class_ "buttonDiv" $ "Click me :o"
 
 hxGet :: B.AttributeValue -> B.Attribute
 hxGet = B.customAttribute "hx-get"
@@ -73,13 +72,13 @@ index = H.body $ do
     H.p $ do
       "Welcome to "
       H.span ! A.class_ "mono" $ "<The Index>"
-    a
+    smile 
 
 makeServer :: FilePath -> IO (Server Site)
 makeServer contentPath = do
   let files = serveDirectory contentPath
       server =
-        return a :<|> return b :<|> return index :<|> files
+        return smile :<|> return wow :<|> return index :<|> files
   return server
 
 data TLSMode = NoTLS | TLS {tlsCertPath :: FilePath, tlsKeyPath :: FilePath, tlsPort :: Warp.Port}
