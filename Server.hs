@@ -29,9 +29,13 @@ import qualified Text.Blaze.Html5.Attributes as A
 -- import qualified URI.ByteString as URIB
 import WaiAppStatic.Storage.Filesystem (defaultWebAppSettings)
 
-type Site = "smile" :> Get '[HTML] H.Html
+type Site =
+  -- pages at /smile and /wow
+  "smile" :> Get '[HTML] H.Html
     :<|> "wow" :> Get '[HTML] H.Html
+    -- The index
     :<|> Get '[HTML] H.Html
+    -- Any other page serves a file from content/
     :<|> Raw
 
 site :: Proxy Site
@@ -72,14 +76,13 @@ index = H.body $ do
     H.p $ do
       "Welcome to "
       H.span ! A.class_ "mono" $ "<The Index>"
-    smile 
+    smile
 
 makeServer :: FilePath -> IO (Server Site)
-makeServer contentPath = do
-  let files = serveDirectory contentPath
-      server =
-        return smile :<|> return wow :<|> return index :<|> files
-  return server
+makeServer contentPath = return server
+  where
+    files = serveDirectory contentPath
+    server = return smile :<|> return wow :<|> return index :<|> files
 
 data TLSMode = NoTLS | TLS {tlsCertPath :: FilePath, tlsKeyPath :: FilePath, tlsPort :: Warp.Port}
 
