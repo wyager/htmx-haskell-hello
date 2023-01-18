@@ -26,7 +26,6 @@ import qualified Text.Blaze as B
 import Text.Blaze.Html5 ((!))
 import qualified Text.Blaze.Html5 as H
 import qualified Text.Blaze.Html5.Attributes as A
--- import qualified URI.ByteString as URIB
 import WaiAppStatic.Storage.Filesystem (defaultWebAppSettings)
 
 type Site =
